@@ -83,8 +83,6 @@ app.get('/chat/index', (req, res) =>{
 app.post('/check/database/login', (req, res) =>{
     mongoose.connect("mongodb://CH3L0V3C0:HkTfIpBs7iyunzNl@undevin-shard-00-00-mpd3g.mongodb.net:27017,undevin-shard-00-01-mpd3g.mongodb.net:27017,undevin-shard-00-02-mpd3g.mongodb.net:27017/chatjimmy?ssl=true&replicaSet=undevin-shard-0&authSource=admin", {
         useMongoClient : true
-    },(err)=>{
-        console.log(err.message);
     });
     A.findOne({
         e : req.body.e
