@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Login</title>
+    <link rel="stylesheet" href="/style/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous">
+    <link rel="stylesheet" href="/style/style.css">
+</head>
+<body>
+    <br><br>
+    <div class="container">
+        <div class="d-flex justify-content-center">
+            <div class="col-6 col-sm-12 col-xl-6 col-xs-12 col-lg-6 card">
+                <div class="card-body">
+                    <h2 class="card-title">Login</h2>
+                    <hr>
+                    <div class="col-12" id="mess"></div>
+                    <form action="" method="POST" id="formi">
+                        <div class="form-group">
+                            <input type="email" class="form-control-plaintext" id="email" placeholder="Aqui va el email">
+                        </div>
+                        <div class="form-group">
+                            <input type="password" class="form-control-plaintext" id="password" placeholder="Aqui va la contraseña">
+                        </div>
+                        <div class="form-group">
+                            <button class="btn btn-outline-dark" id="envia" type="submit">
+                                Enviar
+                            </button>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div id="resultado" class="container row"></div>
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"
+    integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+    crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+    <script src="/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <script src="/js/login.js"></script>
+</body>
+</html>

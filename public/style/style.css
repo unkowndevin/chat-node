@@ -1,0 +1,38 @@
+html, body{
+    height: 100%;
+    width: 100%;
+}
+.mensajes{
+    height: 90%;
+    word-wrap: break-word;
+    overflow: auto;
+}
+.chat{
+    width: 100%;
+}
+.card-title-mod{
+    border-right: solid 1px gray;
+}
+.form-control-plaintext{
+    border-bottom: solid 1px white;
+    width: 100%;
+}
+.btn-send:hover{
+    border: solid 1px black;
+    border-radius: 5%;
+    cursor: pointer;
+}
+.form-control-plaintext:hover{
+    border-bottom: solid 1px black;
+    animation: borde 0.5s ease-in-out;
+}
+.form-mod:hover{
+    width: 80%;
+}
+@keyframes borde{
+    from{
+        border-bottom: solid 1px white;
+    }to{
+        border-bottom: solid 1px black;
+    }
+}
