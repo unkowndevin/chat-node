@@ -4,41 +4,36 @@ const app = express();
 const path = require('path');
 const mongoose = require('mongoose');
 const A = require('./models/a');
-const https_config = { 
-    key: fs.readFileSync(path.join(__dirname,'crt','server.key')),
-    cert: fs.readFileSync(path.join(__dirname,'crt','server.crt'))};
 const port = 7935;
-const https = require('http').createServer(app);
-const io = require('socket.io')(https);
 const body_parser = require('body-parser');
 const cookie_parser = require('cookie-parser');
 const session = require('express-session');
+const http = require('http').createServer(app) ;
+const io = require('socket.io')(http);
 const helmet = require("helmet");
 const RSA = require('node-rsa'); 
 const cors = require('cors');
 const crypter = new RSA({b: 2048});
-app.use(cookie_parser());
+app.use(cookie_parser('UnaPruebaMas'));
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended: false}));
 app.use(session({
     secret: 'UnaPruebaMas',
-    name : 'sessId',
-    resave: true,
+    resave : false,
     saveUninitialized: true,
     cookie: {
-        secure: true
+        secure: false
     }
 }));
 app.use(helmet.frameguard({action: 'deny'}));
 app.use(helmet.hidePoweredBy({setTo : '??? 2.5.8.1.6'}));
 app.use(helmet.ieNoOpen());
-app.use(helmet.noSniff());
-app.enable('trust_proxy');
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));
 //routes
 app.all('*', function(req, res, next) {
+    console.log(req.session.id);
     if(!req.session.control){
         req.session.control={
             views: 1,
@@ -177,6 +172,6 @@ io.on('connection', (socket)=>{
 });
 
 //servidor
-https.listen(process.env.PORT || port, () =>{
-    console.log("Https Server ready on Heroku",process.env.PORT);
+http.listen(process.env.PORT || port, () =>{
+    console.log("http Server ready on Heroku",process.env.PORT);
 });
