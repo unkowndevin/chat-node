@@ -8,7 +8,7 @@ const https_config = {
     key: fs.readFileSync(path.join(__dirname,'crt','server.key')),
     cert: fs.readFileSync(path.join(__dirname,'crt','server.crt'))};
 const port = 7935;
-const https = require('https').createServer(https_config, app);
+const https = require('http').createServer(app);
 const io = require('socket.io')(https);
 const body_parser = require('body-parser');
 const cookie_parser = require('cookie-parser');
