@@ -8,7 +8,7 @@ const https_config = {
     key: fs.readFileSync(path.join(__dirname,'crt','server.key')),
     cert: fs.readFileSync(path.join(__dirname,'crt','server.crt'))};
 const port = 7935;
-const https = require('https').createServer(https_config, app);
+const https = require('http').createServer( app);
 const io = require('socket.io')(https);
 const body_parser = require('body-parser');
 const cookie_parser = require('cookie-parser');
@@ -17,15 +17,13 @@ const helmet = require("helmet");
 const RSA = require('node-rsa'); 
 const cors = require('cors');
 const crypter = new RSA({b: 2048});
-const morgan = require('morgan');
 app.use(cookie_parser());
-app.use(morgan('combined'));
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended: false}));
 app.use(session({
     secret: 'UnaPruebaMas',
     name : 'sessId',
-    resave: false,
+    resave: true,
     saveUninitialized: true,
     cookie: {
         secure: true
