@@ -8,7 +8,7 @@ const https_config = {
     key: fs.readFileSync(path.join(__dirname,'crt','server.key')),
     cert: fs.readFileSync(path.join(__dirname,'crt','server.crt'))};
 const port = 7935;
-const https = require('http').createServer( app);
+const https = require('https').createServer(https_config, app);
 const io = require('socket.io')(https);
 const body_parser = require('body-parser');
 const cookie_parser = require('cookie-parser');
@@ -33,7 +33,7 @@ app.use(helmet.frameguard({action: 'deny'}));
 app.use(helmet.hidePoweredBy({setTo : '??? 2.5.8.1.6'}));
 app.use(helmet.ieNoOpen());
 app.use(helmet.noSniff());
-app.set('trust_proxy', 1);
+app.enable('trust_proxy');
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));
