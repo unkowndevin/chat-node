@@ -14,6 +14,7 @@ const helmet = require("helmet");
 const RSA = require('node-rsa'); 
 const cors = require('cors');
 const crypter = new RSA({b: 2048});
+crypter.setOptions({encryptionScheme: 'pkcs1'});
 app.use(cookie_parser('UnaPruebaMas'));
 app.use(body_parser.json());
 app.use(body_parser.urlencoded({extended: false}));
@@ -28,12 +29,12 @@ app.use(session({
 app.use(helmet.frameguard({action: 'deny'}));
 app.use(helmet.hidePoweredBy({setTo : '??? 2.5.8.1.6'}));
 app.use(helmet.ieNoOpen());
+app.use(helmet.noSniff());
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));
 //routes
 app.all('*', function(req, res, next) {
-    console.log(req.session.id);
     if(!req.session.control){
         req.session.control={
             views: 1,
@@ -118,14 +119,14 @@ app.get('/get/login/data/nick', (req, res) =>{
 })
 app.post('/get/key/final', (req, res) => {
     res.json({
-        key : req.body.key
+        key : crypter.exportKey('public')
     });
 });
 
 //socket
 io.on('connection', (socket)=>{
     socket.control = {
-        cont : 1,
+        cont : 0,
         timeStamp : Date.now(),
         sign : false
     };
@@ -141,12 +142,12 @@ io.on('connection', (socket)=>{
                     socket.control.sign=true;
                     socket.disconnect();
                 }else{
-                    socket.control.cont=1;
+                    socket.control.cont=0;
                     socket.control.timeStamp=Date.now();
                     var response = {
                         message : {
-                            normal : data.message,
-                            crypted : crypter.encrypt(data.message, 'base64')
+                            normal : crypter.decrypt(data.message,'utf8'),
+                            crypted : data.message
                         },
                         name : data.name
                     }
