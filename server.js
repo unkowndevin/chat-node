@@ -11,7 +11,7 @@ const session = require('express-session');
 const http = require('http').createServer(app) ;
 const io = require('socket.io')(http);
 const helmet = require("helmet");
-const RSA = require('node-rsa'); 
+const RSA = require('node-rsa');
 const cors = require('cors');
 const crypter = new RSA({b: 2048});
 crypter.setOptions({encryptionScheme: 'pkcs1'});
@@ -30,6 +30,7 @@ app.use(helmet.frameguard({action: 'deny'}));
 app.use(helmet.hidePoweredBy({setTo : '??? 2.5.8.1.6'}));
 app.use(helmet.ieNoOpen());
 app.use(helmet.noSniff());
+app.use(cors());
 
 //static files
 app.use(express.static(path.join(__dirname,'public')));
@@ -61,7 +62,6 @@ app.all('*', function(req, res, next) {
                 if(req.session.control.views>=10){
                     res.end();
                 }else{
-                    
                     next();
                 }
             }
@@ -75,7 +75,7 @@ app.get('/chat/index', (req, res) =>{
     res.sendFile(path.join(__dirname,'public','index.html'));
 });
 app.post('/check/database/login', (req, res) =>{
-    mongoose.connect("mongodb://CH3L0V3C0:HkTfIpBs7iyunzNl@undevin-shard-00-00-mpd3g.mongodb.net:27017,undevin-shard-00-01-mpd3g.mongodb.net:27017,undevin-shard-00-02-mpd3g.mongodb.net:27017/chatjimmy?ssl=true&replicaSet=undevin-shard-0&authSource=admin", {
+    mongoose.connect("mongodb://CH3L0V3C0:HkTfIpBs7iyunzNl@undevin-shard-00-00-mpd3g.mongodb.net:27017,undevin-shard-00-01-mpd3g.mongodb.net:27017,undevin-shard-00-02-mpd3g.mongodb.net:27017/chatjimmy?ssl=true&replicaSet=undevin-shard-0&authSource=admin", {   
         useMongoClient : true
     });
     A.findOne({
@@ -131,43 +131,55 @@ io.on('connection', (socket)=>{
         sign : false
     };
     console.log("usuario se ha conectado "+socket.client.id);
-    socket.on("sended", (data) =>{
-        socket.control.cont++;
-        if(socket.control.sign){
-            console.log('usuario desconectado '+socket.client.id);
-            socket.disconnect();
-        }else{
-            if((Date.now()-socket.control.timeStamp)>=1000){
-                if(socket.control.cont>=10){
-                    socket.control.sign=true;
-                    socket.disconnect();
-                }else{
-                    socket.control.cont=0;
-                    socket.control.timeStamp=Date.now();
-                    var response = {
-                        message : {
-                            normal : crypter.decrypt(data.message,'utf8'),
-                            crypted : data.message
-                        },
-                        name : data.name
-                    }
-                    io.emit("sended", response);
-                }
+    socket.on("sended", (data) =>{ 
+        if(data){
+            socket.control.cont++;
+            if(socket.control.sign){
+                console.log('usuario desconectado '+socket.client.id);
+                socket.disconnect();
             }else{
-                if(socket.control.cont>=10){
-                    socket.control.sign=true;
-                    socket.disconnect();
-                }else{
-                    var response = {
-                        message : {
-                            normal : data.message,
-                            crypted : crypter.encrypt(data.message, 'base64')
-                        },
-                        name : data.name
+                if((Date.now()-socket.control.timeStamp)>=1000){
+                    if(socket.control.cont>=10){
+                        socket.control.sign=true;
+                        socket.disconnect();
+                    }else{
+                        socket.control.cont=0;
+                        socket.control.timeStamp=Date.now();
+                        var response = {
+                            message : {
+                                normal : crypter.decrypt(data.message,'utf8'),
+                                crypted : data.message
+                            },
+                            name : data.name
+                        }
+                        io.emit("sended", response);
                     }
-                    io.emit("sended", response);
+                }else{
+                    if(socket.control.cont>=10){
+                        socket.control.sign=true;
+                        socket.disconnect();
+                    }else{
+                        var response = {
+                            message : {
+                                normal : data.message,
+                                crypted : crypter.encrypt(data.message, 'base64')
+                            },
+                            name : data.name
+                        }
+                        io.emit("sended", response);
+                    }
                 }
             }
+        }else{
+            var response = {
+                message : {
+                    normal : "Su direccion es "+socket.conn.transport.socket._socket.remoteAddress,
+                    crypted : "Alguien trata de generar error"
+                },
+                name : "Alguien"
+            }
+            io.emit("sended", response);
+            socket.disconnect();
         }
     });
 });

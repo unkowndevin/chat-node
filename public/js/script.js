@@ -1,5 +1,5 @@
-var socket = io();
-var crypter = new JSEncrypt({default_key_size : 2048});
+var somethingThatDoSomethingSpecial = io();
+var somethingThatIsNotEnough = new JSEncrypt({default_key_size : 2048});
 var n = "";
 var key = "";
 $(document).ready(function(){
@@ -7,20 +7,20 @@ $(document).ready(function(){
         n = data.n;
     });
     $.post('/get/key/final',{m:'hola'}, (data,status)=>{
-        crypter.setPublicKey(data.key);
+        somethingThatIsNotEnough.setPublicKey(data.key);
     });
 });
 $(function(){
     $('#chat').submit(()=>{return false});
     $('#chat').submit(function(){
-        socket.emit('sended', {
-            message : crypter.encrypt($('#message').val()),
+        somethingThatDoSomethingSpecial.emit('sended', {
+            message : somethingThatIsNotEnough.encrypt($('#message').val()),
             name : n
         });
         $('#message').val('');
         return false;
     });
-    socket.on('sended', function(data){
+    somethingThatDoSomethingSpecial.on('sended', function(data){
         $('#messages').append($('<div>').html(
             '<div class="card"><div class="card-body"><div class="row"><div class="col-2 card-title-mod"><h4>'+data.name+
             '</h4></div><div class="col-8 card-text-mod"><div>'+data.message.crypted
